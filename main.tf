@@ -43,7 +43,7 @@ resource "aws_kms_key" "tf-state-key" {
         "kms:*"
       ],
       "Resource": "*"
-    },
+    }
   ]
 }
 POLICY
