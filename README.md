@@ -34,9 +34,6 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
-| <a name="input_admin_sso_role"></a> [admin\_sso\_role](#input\_admin\_sso\_role) | n/a | `string` | n/a | yes |
-| <a name="input_ci-user"></a> [ci-user](#input\_ci-user) | n/a | `string` | n/a | yes |
-| <a name="input_costcenter"></a> [costcenter](#input\_costcenter) | n/a | `string` | n/a | yes |
 | <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
 | <a name="input_organization"></a> [organization](#input\_organization) | n/a | `string` | n/a | yes |
 
@@ -53,5 +50,9 @@ No modules.
 
 ## Outputs
 
-No outputs.
+| Name | Description |
+|------|-------------|
+| <a name="output_key_arn"></a> [key\_arn](#output\_key\_arn) | n/a |
+| <a name="output_lock_table"></a> [lock\_table](#output\_lock\_table) | n/a |
+| <a name="output_terraform_bucket"></a> [terraform\_bucket](#output\_terraform\_bucket) | n/a |
 <!-- END_TF_DOCS -->
