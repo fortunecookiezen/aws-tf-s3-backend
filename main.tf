@@ -1,30 +1,42 @@
 resource "aws_s3_bucket" "terraform-backend" {
   bucket = "${var.organization}-${var.environment}-${data.aws_caller_identity.current.account_id}-tf-state-${data.aws_region.current.name}"
-  versioning {
-    enabled = true
-  }
-  server_side_encryption_configuration {
-    rule {
-      apply_server_side_encryption_by_default {
-        sse_algorithm     = "aws:kms"
-        kms_master_key_id = aws_kms_key.tf-state-key.id
-      }
-    }
-  }
-  lifecycle_rule {
-    enabled = true
-    noncurrent_version_expiration {
-      days = 30
-    }
-  }
-  acl = "private"
+
   tags = {
     Name         = "terraform-state"
     Organization = var.organization
     Environment  = var.environment
   }
 }
+resource "aws_s3_bucket_versioning" "versioning" {
+  bucket = aws_s3_bucket.terraform-backend.id
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
+resource "aws_s3_bucket_server_side_encryption_configuration" "encryption" {
+  bucket = aws_s3_bucket.terraform-backend.bucket
 
+  rule {
+    apply_server_side_encryption_by_default {
+      kms_master_key_id = aws_kms_key.tf-state-key.id
+      sse_algorithm     = "aws:kms"
+    }
+  }
+}
+resource "aws_s3_bucket_acl" "acl" {
+  bucket = aws_s3_bucket.terraform-backend.id
+  acl    = "private"
+}
+resource "aws_s3_bucket_lifecycle_configuration" "lifecycle_rule" {
+  bucket = aws_s3_bucket.terraform-backend.id
+  rule {
+    id     = "noncurrent-version-expiration"
+    status = "Enabled"
+    noncurrent_version_expiration {
+      noncurrent_days = 30
+    }
+  }
+}
 resource "aws_kms_key" "tf-state-key" {
   description             = "key used to encrypt terraform state file"
   deletion_window_in_days = 10
