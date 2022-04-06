@@ -1,20 +1,6 @@
 resource "aws_s3_bucket" "terraform-backend" {
   bucket = "${var.organization}-${var.environment}-${data.aws_caller_identity.current.account_id}-tf-state-${data.aws_region.current.name}"
-  # server_side_encryption_configuration {
-  #   rule {
-  #     apply_server_side_encryption_by_default {
-  #       sse_algorithm     = "aws:kms"
-  #       kms_master_key_id = aws_kms_key.tf-state-key.id
-  #     }
-  #   }
-  # }
-  # lifecycle_rule {
-  #   enabled = true
-  #   noncurrent_version_expiration {
-  #     days = 30
-  #   }
-  # }
-  # acl = "private"
+
   tags = {
     Name         = "terraform-state"
     Organization = var.organization
