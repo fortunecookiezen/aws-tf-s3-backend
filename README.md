@@ -9,7 +9,7 @@ terraform module to create your terraform backend. Yeah.
 
 ```hcl
 module "backend" {
-  source       = "git::https://github.com/fortunecookiezen/aws-tf-s3-backend.git?ref=v2.0"
+  source       = "git::https://github.com/fortunecookiezen/aws-tf-s3-backend.git?ref=v2.2"
   organization = "demo"
   environment  = "test"
 }
@@ -17,13 +17,15 @@ module "backend" {
 
 ## Requirements
 
-No requirements.
+| Name | Version |
+|------|---------|
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | n/a |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 4.0 |
 
 ## Modules
 
