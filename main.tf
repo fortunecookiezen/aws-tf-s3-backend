@@ -7,7 +7,7 @@ terraform {
   }
 }
 resource "aws_s3_bucket" "terraform-backend" {
-  bucket = "${var.organization}-${var.environment}-${data.aws_caller_identity.current.account_id}-tf-state-${data.aws_region.current.name}"
+  bucket = "${var.organization}-${var.environment}-${data.aws_caller_identity.current.account_id}-tf-state-${data.aws_region.current.id}"
 
   tags = {
     Name         = "terraform-state"
@@ -89,7 +89,7 @@ resource "aws_kms_alias" "tf-state-key" {
 }
 
 resource "aws_dynamodb_table" "tf-lock" {
-  name         = "terraform-lock-table-${data.aws_region.current.name}"
+  name         = "terraform-lock-table-${data.aws_region.current.id}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
   attribute {
