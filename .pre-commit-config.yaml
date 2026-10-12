@@ -7,3 +7,11 @@ repos:
       - --args=-recursive
       - --args=-no-color
     - id: terraform_docs
+- repo: local
+  hooks:
+    - id: terraform_test
+      name: Terraform test
+      entry: bash -c 'terraform init -backend=false -input=false -no-color >/dev/null && terraform test -no-color'
+      language: system
+      files: \.(tf|tftest\.hcl)$
+      pass_filenames: false

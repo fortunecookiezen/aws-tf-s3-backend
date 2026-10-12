@@ -40,6 +40,8 @@ No modules.
 | Name | Description | Type | Default | Required |
 | ---- | ----------- | ---- | ------- | :------: |
 | <a name="input_environment"></a> [environment](#input\_environment) | Environment name (e.g. dev, prod), included in the state bucket name. | `string` | n/a | yes |
+| <a name="input_kms_alias_name"></a> [kms\_alias\_name](#input\_kms\_alias\_name) | Name of the KMS key alias. Set a unique value to deploy more than one backend per account and region. | `string` | `"alias/tf-state-key"` | no |
+| <a name="input_lock_table_name"></a> [lock\_table\_name](#input\_lock\_table\_name) | Name of the DynamoDB lock table. Defaults to terraform-lock-table-<region>. Set a unique value to deploy more than one backend per account and region. | `string` | `null` | no |
 | <a name="input_organization"></a> [organization](#input\_organization) | Organization name, used as the prefix of the state bucket name. | `string` | n/a | yes |
 | <a name="input_tags"></a> [tags](#input\_tags) | Tags applied to all resources. A Name tag set here is overridden per resource. | `map(string)` | `{}` | no |
 
@@ -52,6 +54,7 @@ No modules.
 | [aws_kms_key.tf-state-key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
 | [aws_s3_bucket.terraform-backend](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket) | resource |
 | [aws_s3_bucket_lifecycle_configuration.lifecycle_rule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_lifecycle_configuration) | resource |
+| [aws_s3_bucket_policy.deny_insecure_transport](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_policy) | resource |
 | [aws_s3_bucket_public_access_block.bucket_public_access_block](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_public_access_block) | resource |
 | [aws_s3_bucket_server_side_encryption_configuration.encryption](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_server_side_encryption_configuration) | resource |
 | [aws_s3_bucket_versioning.versioning](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/s3_bucket_versioning) | resource |

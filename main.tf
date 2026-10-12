@@ -12,6 +12,10 @@ resource "aws_s3_bucket" "terraform-backend" {
   tags = merge(var.tags, {
     Name = "terraform-state"
   })
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 
 resource "aws_s3_bucket_public_access_block" "bucket_public_access_block" {
@@ -20,6 +24,33 @@ resource "aws_s3_bucket_public_access_block" "bucket_public_access_block" {
   block_public_policy     = true
   ignore_public_acls      = true
   restrict_public_buckets = true
+}
+
+resource "aws_s3_bucket_policy" "deny_insecure_transport" {
+  bucket = aws_s3_bucket.terraform-backend.id
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid       = "DenyInsecureTransport"
+        Effect    = "Deny"
+        Principal = "*"
+        Action    = "s3:*"
+        Resource = [
+          aws_s3_bucket.terraform-backend.arn,
+          "${aws_s3_bucket.terraform-backend.arn}/*",
+        ]
+        Condition = {
+          Bool = {
+            "aws:SecureTransport" = "false"
+          }
+        }
+      }
+    ]
+  })
+
+  # S3 rejects concurrent bucket policy and public access block updates
+  depends_on = [aws_s3_bucket_public_access_block.bucket_public_access_block]
 }
 
 resource "aws_s3_bucket_versioning" "versioning" {
@@ -78,14 +109,18 @@ POLICY
   tags = merge(var.tags, {
     Name = "tf-state-key"
   })
+
+  lifecycle {
+    prevent_destroy = true
+  }
 }
 resource "aws_kms_alias" "tf-state-key" {
-  name          = "alias/tf-state-key"
+  name          = var.kms_alias_name
   target_key_id = aws_kms_key.tf-state-key.key_id
 }
 
 resource "aws_dynamodb_table" "tf-lock" {
-  name         = "terraform-lock-table-${data.aws_region.current.region}"
+  name         = coalesce(var.lock_table_name, "terraform-lock-table-${data.aws_region.current.region}")
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
   attribute {
