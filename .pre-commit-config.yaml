@@ -6,9 +6,15 @@ repos:
       args:
       - --args=-recursive
       - --args=-no-color
-    - id: terraform_docs
 - repo: local
   hooks:
+    # always regenerate the root README, which includes examples/main.tf
+    - id: terraform_docs
+      name: Terraform docs
+      entry: terraform-docs .
+      language: system
+      files: (\.tf|\.terraform-docs\.yml)$
+      pass_filenames: false
     - id: terraform_test
       name: Terraform test
       entry: bash -c 'terraform init -backend=false -input=false -no-color >/dev/null && terraform test -no-color'
