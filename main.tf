@@ -2,18 +2,16 @@ terraform {
   required_providers {
     aws = {
       source  = "hashicorp/aws"
-      version = ">= 5.0"
+      version = ">= 6.0"
     }
   }
 }
 resource "aws_s3_bucket" "terraform-backend" {
-  bucket = "${var.organization}-${var.environment}-${data.aws_caller_identity.current.account_id}-tf-state-${data.aws_region.current.id}"
+  bucket = "${var.organization}-${var.environment}-${data.aws_caller_identity.current.account_id}-tf-state-${data.aws_region.current.region}"
 
-  tags = {
-    Name         = "terraform-state"
-    Organization = var.organization
-    Environment  = var.environment
-  }
+  tags = merge(var.tags, {
+    Name = "terraform-state"
+  })
 }
 
 resource "aws_s3_bucket_public_access_block" "bucket_public_access_block" {
@@ -77,11 +75,9 @@ resource "aws_kms_key" "tf-state-key" {
   ]
 }
 POLICY
-  tags = {
-    Name         = "tf-state-key"
-    Organization = var.organization
-    Environment  = var.environment
-  }
+  tags = merge(var.tags, {
+    Name = "tf-state-key"
+  })
 }
 resource "aws_kms_alias" "tf-state-key" {
   name          = "alias/tf-state-key"
@@ -89,7 +85,7 @@ resource "aws_kms_alias" "tf-state-key" {
 }
 
 resource "aws_dynamodb_table" "tf-lock" {
-  name         = "terraform-lock-table-${data.aws_region.current.id}"
+  name         = "terraform-lock-table-${data.aws_region.current.region}"
   billing_mode = "PAY_PER_REQUEST"
   hash_key     = "LockID"
   attribute {
@@ -103,9 +99,7 @@ resource "aws_dynamodb_table" "tf-lock" {
   point_in_time_recovery {
     enabled = true
   }
-  tags = {
-    Name         = "terraform-config"
-    Organization = var.organization
-    Environment  = var.environment
-  }
+  tags = merge(var.tags, {
+    Name = "terraform-config"
+  })
 }

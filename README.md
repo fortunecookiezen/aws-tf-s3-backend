@@ -9,23 +9,27 @@ terraform module to create your terraform backend. Yeah.
 
 ```hcl
 module "backend" {
-  source       = "git::https://github.com/fortunecookiezen/aws-tf-s3-backend.git?ref=v2.2"
+  source       = "git::https://github.com/fortunecookiezen/aws-tf-s3-backend.git?ref=v3.0.0"
   organization = "demo"
   environment  = "test"
+  tags = {
+    Organization = "demo"
+    Environment  = "test"
+  }
 }
 ```
 
 ## Requirements
 
 | Name | Version |
-|------|---------|
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 5.0 |
+| ---- | ------- |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 6.0 |
 
 ## Providers
 
 | Name | Version |
-|------|---------|
-| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 5.0 |
+| ---- | ------- |
+| <a name="provider_aws"></a> [aws](#provider\_aws) | >= 6.0 |
 
 ## Modules
 
@@ -34,14 +38,15 @@ No modules.
 ## Inputs
 
 | Name | Description | Type | Default | Required |
-|------|-------------|------|---------|:--------:|
-| <a name="input_environment"></a> [environment](#input\_environment) | n/a | `string` | n/a | yes |
-| <a name="input_organization"></a> [organization](#input\_organization) | n/a | `string` | n/a | yes |
+| ---- | ----------- | ---- | ------- | :------: |
+| <a name="input_environment"></a> [environment](#input\_environment) | Environment name (e.g. dev, prod), included in the state bucket name. | `string` | n/a | yes |
+| <a name="input_organization"></a> [organization](#input\_organization) | Organization name, used as the prefix of the state bucket name. | `string` | n/a | yes |
+| <a name="input_tags"></a> [tags](#input\_tags) | Tags applied to all resources. A Name tag set here is overridden per resource. | `map(string)` | `{}` | no |
 
 ## Resources
 
 | Name | Type |
-|------|------|
+| ---- | ---- |
 | [aws_dynamodb_table.tf-lock](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/dynamodb_table) | resource |
 | [aws_kms_alias.tf-state-key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_alias) | resource |
 | [aws_kms_key.tf-state-key](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_key) | resource |
@@ -56,8 +61,8 @@ No modules.
 ## Outputs
 
 | Name | Description |
-|------|-------------|
-| <a name="output_key_arn"></a> [key\_arn](#output\_key\_arn) | n/a |
-| <a name="output_lock_table"></a> [lock\_table](#output\_lock\_table) | n/a |
-| <a name="output_terraform_bucket"></a> [terraform\_bucket](#output\_terraform\_bucket) | n/a |
+| ---- | ----------- |
+| <a name="output_key_arn"></a> [key\_arn](#output\_key\_arn) | ARN of the KMS key that encrypts the state bucket and lock table. |
+| <a name="output_lock_table"></a> [lock\_table](#output\_lock\_table) | Name of the DynamoDB table used for state locking. |
+| <a name="output_terraform_bucket"></a> [terraform\_bucket](#output\_terraform\_bucket) | Name of the S3 bucket that stores Terraform state. |
 <!-- END_TF_DOCS -->
